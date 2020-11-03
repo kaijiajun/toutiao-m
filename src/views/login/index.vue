@@ -1,7 +1,10 @@
 <template>
   <div class="login-container">
     <!-- 导航栏 -->
-    <van-nav-bar class="page-nav-bar" title="登录" />
+    <van-nav-bar class="page-nav-bar" title="登录" >
+      <!-- 返回按钮 -->
+      <van-icon slot="left" name="cross" @click="$router.back()"/>
+    </van-nav-bar>
     <!-- 登录表单 -->
     <!--
       表单验证：
@@ -110,9 +113,9 @@ export default {
   mounted() {},
   methods: {
     async onSubmit() {
-      // 获取表单数据
+      // 1.获取表单数据
       const user = this.user;
-      // 表单验证
+      //2. 表单验证
 
       // 轻提示
       //在组件中必须通过this.$toast去调用Toast组件
@@ -121,7 +124,7 @@ export default {
         forbidClick: true, // 是否禁止背景点击（forbid：禁止）
         duration: 0, // 持续时间，默认时间2s，0表示持续展示不停止，直到成功或失败
       });
-      // 提交表单请求登录
+      // 3.提交表单请求登录
       try {
           // res.data.data => { token: 'xxx', refresh_token: 'xxx' }
         const {data:res} = await login(user);
@@ -130,6 +133,10 @@ export default {
 
         // 提示 success 或者 fail 的时候，会先把其它的 toast 先清除
         this.$toast.success("登录成功");
+
+        // 登录成功，跳转回原来页面
+        // back 的方式不严谨，后面讲功能优化的时候再说 
+        this.$router.back()
       } catch (err) {
         if (err.response.status === 400) {
           //   console.log('手机号或验证码不正确',err);
@@ -139,7 +146,7 @@ export default {
           this.$toast.fail("登录失败，请稍后重试");
         }
       }
-      // 数据请求响应结果处理后续操作
+      // 4.数据请求响应结果处理后续操作
 
     },
 

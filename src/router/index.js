@@ -13,6 +13,12 @@ const routes = [{
             // #完整写法是：@views/login/index.vue，但是index.vue可以省略，导入一个目录时默认导入目录下的index.vue
     },
     {
+        path: '/search',
+        name: 'search',
+        component: () =>
+            import ('@/views/search')
+    },
+    {
         path: '/',
         // name: 'layout', //如果父路由有默认子路由，那他的name就没有意义，可以省略
         component: () =>

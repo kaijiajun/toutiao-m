@@ -19,6 +19,13 @@ const routes = [{
             import ('@/views/search')
     },
     {
+        path: '/article/:articleId',
+        name: 'article',
+        component: () =>
+            import ('@/views/article'),
+        props: true // 将路由动态参数映射到组件的 props 中，更推荐这种做法
+    },
+    {
         path: '/',
         // name: 'layout', //如果父路由有默认子路由，那他的name就没有意义，可以省略
         component: () =>

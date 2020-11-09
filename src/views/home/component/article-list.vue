@@ -184,7 +184,9 @@ export default {
 .article-list{
   // vh视口单位1vw=浏览器窗口可视区域宽的百分之一
   //          1vh=浏览器窗口可视区域高的百分之一
-  height: 79vh;
+  // height: 79vh;
+  // calc计算  + -运算时前后必须有空格，否则语法错误
+  height: calc(100vh - 174px - 100px);
   overflow-y: auto;
 }
 </style>

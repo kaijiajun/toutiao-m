@@ -4,9 +4,41 @@
 
 import axios from 'axios'
 import store from '@/store'
+import JSONBig from 'json-bigint'
+
+// const jsonStr = '{ "art_id": 1245953273786007552 }'
+
+// console.log(JSON.parse(jsonStr)) // 1245953273786007600
+//     // JSON.stringify()
+
+// // JSONBig 可以处理数据中超出 JavaScript 安全整数范围的问题
+// console.log(JSONBig.parse(jsonStr)) // 把 JSON 格式的字符串转为 JavaScript 对象
+
+// // 使用的时候需要把 BigNumber 类型的数据转为字符串来使用
+// console.log(JSONBig.parse(jsonStr).art_id.toString()) // 1245953273786007552
+
+// console.log(JSON.stringify(JSONBig.parse(jsonStr)))
+
+// console.log(JSONBig.stringify(JSONBig.parse(jsonStr))) // 把 JavaScript 对象 转为 JSON 格式的字符串转
+
 
 const request = axios.create({
-    baseURL: 'http://ttapi.research.itcast.cn/' //基础路径
+    baseURL: 'http://ttapi.research.itcast.cn/', //基础路径
+
+    // axios 默认会在内部这样处理后端返回的数据
+    // return JSON.parse(data)
+
+    // transformResponse 允许自定义原始的响应数据（字符串）
+    // data后端返回的原始数据
+    transformResponse: [function(data) {
+        try {
+            // 如果转换成功则返回转换的数据结果
+            return JSONBig.parse(data)
+        } catch (err) {
+            // 如果转换失败，则包装为统一数据格式并返回
+            return data
+        }
+    }]
 })
 
 // 请求拦截

@@ -88,12 +88,25 @@
         ></div>
         <van-divider>正文结束</van-divider>
 
+        <!-- 文章评论列表区域 -->
+        <comment-list
+        :source='article.art_id'
+        :list='commentList'
+        @onload-success='totalCommentCount=$event.total_count'
+        @reply-click="onReplyClick"
+        />
+
         <!-- 底部区域 -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small"
+          <van-button 
+          class="comment-btn" 
+          type="default" 
+          round 
+          size="small"
+          @click="isPostShow=true"
             >写评论</van-button
           >
-          <van-icon name="comment-o" info="123" color="#777" />
+          <van-icon name="comment-o" :info="totalCommentCount" color="#777" />
           <collect-article 
           class="btn-item" 
           v-model="article.is_collected" 
@@ -107,6 +120,17 @@
           <van-icon name="share" color="#777777"></van-icon>
         </div>
         <!-- /底部区域 -->
+
+        <!-- 发布评论弹出层 -->
+        <van-popup 
+        v-model="isPostShow" 
+        position="bottom"
+         >
+         <comment-post
+         :target="article.art_id"
+         @post-comment='onPostSuccess'
+         />
+         </van-popup>
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -126,6 +150,23 @@
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
 
+<!-- 评论回复 -->
+    <van-popup 
+        v-model="isReplyShow" 
+        position="bottom"
+        style="height:100%;"
+         >
+         <!-- v-if条件渲染
+              true渲染元素节点
+              false不渲染
+          -->
+         <comment-reply
+         v-if="isReplyShow"
+         :comment="currentComment"
+         @close="isReplyShow=false"
+         />
+         </van-popup>
+
     <!-- 
         图片预览区域
      -->
@@ -138,6 +179,9 @@ import { ImagePreview } from "vant";
 import FollowUser from "@/components/follow-user";
 import CollectArticle from "@/components/collect-article";
 import LikeArticle from '@/components/like-article'
+import CommentList from './components/comment-list'
+import CommentPost from './components/comment-post'
+import CommentReply from './components/commrnt-reply'
 
 // ImagePreview({
 //   images: [
@@ -159,7 +203,19 @@ export default {
   components: {
     FollowUser,
     CollectArticle,
-    LikeArticle
+    LikeArticle,
+    CommentList,
+    CommentPost,
+    CommentReply
+  },
+
+  // 给所有的后代组件提供数据
+// 然后在任何后代组件里，我们都可以使用 inject 选项
+// 来接收指定的我们想要添加在这个实例上的属性
+  provide:function(){
+    return {
+       articleId:this.articleId
+    }
   },
   // 组件参数 接收来自父组件的数据
   props: {
@@ -175,6 +231,11 @@ export default {
       isLoading: true, // 文章加载状态
       errStatus: 0, // 请求异常状态
       // followLoading:false //控制关注按钮loading的显示与隐藏
+      totalCommentCount:0, //评论总数
+      isPostShow:false, //控制发布评论弹出层的显示与隐藏
+      commentList:[],  //
+      isReplyShow:false, //控制回复弹窗的显示与隐藏
+      currentComment:{} //点击的当前评论对象
     };
   },
   // 计算属性
@@ -237,10 +298,25 @@ export default {
             images,
             // 预览图片的起始位置,从0开始
             startPosition: index,
-          });
-        };
-      });
+          })
+        }
+      })
     },
+    
+    onPostSuccess(data){
+      //   关闭弹层
+      this.isPostShow=false
+      // 将发布内容展示到列表顶部
+      this.commentList.unshift(data.new_obj)
+      this.totalCommentCount++
+    },
+
+    onReplyClick(comment){
+      // console.log(comment);
+      this.currentComment=comment
+      // 显示评论回复弹出层
+      this.isReplyShow=true
+    }
   },
 };
 </script>

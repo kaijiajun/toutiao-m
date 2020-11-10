@@ -4,9 +4,10 @@
 
 import axios from 'axios'
 import store from '@/store'
-import JSONBig from 'json-bigint'
+import bigint from 'json-bigint'
 
-// const jsonStr = '{ "art_id": 1245953273786007552 }'
+const JSONBig = bigint({ "storeAsString": true }) // 通过该配置，让超大数字转为字符串
+    // const jsonStr = '{ "art_id": 1245953273786007552 }'
 
 // console.log(JSON.parse(jsonStr)) // 1245953273786007600
 //     // JSON.stringify()

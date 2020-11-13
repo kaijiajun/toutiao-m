@@ -26,6 +26,12 @@ const routes = [{
         props: true // 将路由动态参数映射到组件的 props 中，更推荐这种做法
     },
     {
+        path: '/user/profile',
+        name: 'user-profile',
+        component: () =>
+            import ('@/views/user-profile')
+    },
+    {
         path: '/',
         // name: 'layout', //如果父路由有默认子路由，那他的name就没有意义，可以省略
         component: () =>
